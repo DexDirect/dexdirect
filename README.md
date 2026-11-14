@@ -63,7 +63,7 @@ tools/                     scripts that regenerate the media from the raw footag
 
 - [x] arXiv link ([2607.27784](https://arxiv.org/abs/2607.27784)) in the nav, menu, overview buttons, footer and BibTeX.
 - [ ] Add the code link. Search `TODO` in `index.html` and remove `is-soon` / `aria-disabled` from that button.
-- [x] Author names link to personal pages: Beom Jun Kim, Jonathan Liu, Alvin Zhu, Mingzhang Zhu. Wrap the other names the same way once they have a page.
+- [x] Author names link to personal pages: Beom Jun Kim, Shiu-Jen Wang, Jonathan Liu, Alvin Zhu, Mingzhang Zhu. Wrap the other names the same way once they have a page.
 - [x] `og:image` / `og:url` point at https://dexdirect.github.io/dexdirect/ (update both if the page moves to another domain).
 - [x] Simulation playground in the 3D section.
 
