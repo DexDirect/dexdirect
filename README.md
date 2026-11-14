@@ -32,7 +32,7 @@ tools/                     scripts that regenerate the media from the raw footag
 - [x] arXiv link ([2607.27784](https://arxiv.org/abs/2607.27784)) in the nav, menu, overview buttons, footer and BibTeX.
 - [ ] Add the code link. Search `TODO` in `index.html` and remove `is-soon` / `aria-disabled` from that button.
 - [ ] Optionally link the author names to homepages.
-- [x] `og:image` / `og:url` point at https://beomjunkeem.github.io/dex-direct/ (update both if the page moves to another domain).
+- [x] `og:image` / `og:url` point at https://junkeem.com/dex-direct/ (update both if the page moves to another domain).
 - [ ] Replace the 3D placeholder, or delete the section.
 
 ## Where the media comes from
