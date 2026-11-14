@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DexDirect: Direct Kinesthetic Arm Guidance for Efficient Dexterous Demonstration Collection</title>
+  <meta name="description" content="DexDirect: the operator drags a gravity-compensated robot arm by a handle while a single webcam retargets the other hand onto a 16-joint dexterous hand — 3.2× more successful demonstrations than TeleDex and 17.2× more than AnyTeleop, with lower workload.">
+
+  <!-- Social preview. TODO: replace with absolute URLs once the page is deployed. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DexDirect: Direct Kinesthetic Arm Guidance for Efficient Dexterous Demonstration Collection">
+  <meta property="og:description" content="Drag the arm, webcam the fingers: a low-setup interface for collecting dexterous manipulation demonstrations.">
+  <meta property="og:image" content="static/images/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="static/css/style.css">
+  <script src="static/js/main.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="nav" aria-label="Sections">
+  <div class="container nav-inner">
+    <a class="nav-brand" href="#top">DexDirect</a>
+    <div class="nav-links">
+      <a href="#video">Video</a>
+      <a href="#method">Method</a>
+      <a href="#explore-3d">3D</a>
+      <a href="#tasks">Tasks</a>
+      <a href="#results">Results</a>
+      <a href="#policy">Policy</a>
+      <a href="#bibtex">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container hero-text">
+    <p class="venue">IEEE-RAS Humanoids 2026</p>
+    <h1 class="title">
+      <span class="title-brand">DexDirect</span>
+      <span class="title-sub">Direct Kinesthetic Arm Guidance for Efficient Dexterous Demonstration Collection</span>
+    </h1>
+
+    <!-- TODO: wrap names in <a href="..."> to link personal homepages -->
+    <ul class="authors">
+      <li>Beom Jun Kim<sup>1</sup></li>
+      <li>Shiu-Jen Wang<sup>1</sup></li>
+      <li>Jonathan Liu<sup>2</sup></li>
+      <li>Alvin Zhu<sup>2,3</sup></li>
+      <li>Quanyou Wang<sup>1</sup></li>
+      <li>Hanzhang Fang<sup>2,3</sup></li>
+      <li>Feng Xu<sup>1</sup></li>
+      <li>Mingzhang Zhu<sup>1</sup></li>
+      <li>Yuchen Cui<sup>3&dagger;</sup></li>
+      <li>Dennis W. Hong<sup>1&dagger;</sup></li>
+    </ul>
+    <p class="affils">
+      <span><sup>1</sup>Mechanical and Aerospace Engineering</span>
+      <span><sup>2</sup>Electrical and Computer Engineering</span>
+      <span><sup>3</sup>Computer Science</span>
+      <span class="affils-uni">University of California, Los Angeles</span>
+      <span class="affils-note"><sup>&dagger;</sup>Equal advising</span>
+    </p>
+
+    <div class="links">
+      <a class="btn" href="static/pdf/DexDirect_Humanoids_2026.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>
+        Paper
+      </a>
+      <!-- TODO: set href to the arXiv abstract page and drop .is-soon / aria-disabled -->
+      <a class="btn btn-ghost is-soon" href="#" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"/></svg>
+        arXiv <span class="soon">soon</span>
+      </a>
+      <a class="btn" href="#video">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z" class="fill"/></svg>
+        Video
+      </a>
+      <!-- TODO: set href to the code repository and drop .is-soon / aria-disabled -->
+      <a class="btn btn-ghost is-soon" href="#" aria-disabled="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg>
+        Code <span class="soon">soon</span>
+      </a>
+      <a class="btn btn-ghost" href="#bibtex">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4c0 3-1.5 5-4 6M14 7h4v4c0 3-1.5 5-4 6"/></svg>
+        BibTeX
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+    <figure class="hero-media">
+      <video class="media-frame" data-autoplay autoplay muted loop playsinline controls preload="auto"
+             poster="static/images/posters/hero.jpg" width="1600" height="680"
+             aria-label="An operator drags the robot arm by a wrist handle with the left hand while the right hand, tracked by a webcam, drives the robot fingers to extract a Jenga block.">
+        <source src="static/videos/hero.mp4" type="video/mp4">
+      </video>
+      <figcaption>
+        <strong>One hand drags the arm, the other drives the fingers.</strong>
+        The left hand guides the gravity-compensated arm through a wrist handle; a single webcam retargets the right hand onto the 16-joint MIDAS hand. The monitor shows the wrist-camera stream and hand tracking. Real time.
+      </figcaption>
+    </figure>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Key numbers -->
+  <section class="glance" aria-label="Key results">
+    <div class="container glance-grid">
+      <div class="stat">
+        <p class="stat-num">3.2&times;</p>
+        <p class="stat-label">more successful demonstrations than <b>TeleDex</b> (pose tracking)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">17.2&times;</p>
+        <p class="stat-label">more successful demonstrations than <b>AnyTeleop</b> (vision only)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">2.01</p>
+        <p class="stat-label">overall Raw TLX workload, vs 3.08 and 3.81 (lower is better)</p>
+      </div>
+      <div class="stat">
+        <p class="stat-num">90%</p>
+        <p class="stat-label">diffusion-policy success on cube pick-and-place (18/20)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract -->
+  <section class="section" id="abstract">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Abstract</p>
+      </div>
+      <p class="prose abstract">
+        Scalable collection of dexterous manipulation demonstrations remains a major bottleneck for robot learning. High-fidelity interfaces often require costly hardware and extensive setup, while low-setup, low-cost alternatives tend to provide less precise control and impose greater cognitive workload on operators. We present DexDirect, a direct kinesthetic arm guidance for efficient dexterous demonstration collection. The operator drags a 6-DoF gravity-compensated robot arm directly by a handle, while a single webcam retargets operator&rsquo;s other hand onto a 16 joints 13-DoF dexterous robot hand. User studies suggest DexDirect collects 17.2&times; and 3.2&times; more successful demonstrations compared to purely vision (AnyTeleop) and pose-tracking (TeleDex) baselines. An adapted NASA-TLX shows DexDirect greatly reduces mental demand, effort, and frustration, despite raising physical demand. A diffusion policy trained on DexDirect demonstrations reaches a 90% success rate on a cube pick-and-place task. These results suggest that direct kinesthetic arm guidance combined with vision-based hand retargeting provides an efficient low-setup and scalable interface for collecting dexterous manipulation demonstrations.
+      </p>
+    </div>
+  </section>
+
+  <!-- Video -->
+  <section class="section section-alt" id="video">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Video</p>
+        <h2>DexDirect in 72 seconds</h2>
+      </div>
+      <figure class="video-main">
+        <video class="media-frame" controls preload="none" playsinline
+               poster="static/images/posters/dexdirect_video.jpg" width="1920" height="1080"
+               aria-label="DexDirect supplementary video">
+          <source src="static/videos/dexdirect_video.mp4" type="video/mp4">
+          <a href="static/videos/dexdirect_video.mp4">Download the video (MP4)</a>
+        </video>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Method -->
+  <section class="section" id="method">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Method</p>
+        <h2>Two hands, two control pathways</h2>
+        <p class="lead">
+          Arm motion needs global 6-DoF positioning over a large workspace and physical contact with the world. Finger articulation is high-dimensional but lives in a hand-local frame. DexDirect gives each the interface that suits it: kinesthetic guidance for the arm, webcam retargeting for the fingers. There is no leader arm, no operator-to-robot calibration and no arm-side retargeting.
+        </p>
+      </div>
+
+      <figure class="fig fig-setup">
+        <img src="static/images/teaser_setup.webp" width="1800" height="1099" loading="lazy" decoding="async"
+             alt="Annotated DexDirect setup: a 6-DoF PIPER arm with the MIDAS robot hand, a wrist handle for kinesthetic guidance, a wrist support with a hand-tracking webcam, a wrist camera, and a foot switch that triggers data collection.">
+        <figcaption>The DexDirect station: kinesthetic guidance of the arm through a wrist handle, a hand-tracking webcam under a forearm support, a wrist camera for policy observations, and a foot switch that starts and stops recording.</figcaption>
+      </figure>
+
+      <div class="pathways">
+        <article class="card pathway">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/how_left.jpg" width="1280" height="720"
+                 aria-label="The operator's left hand drags the robot arm by its handle, next to a diagram highlighting the left-hand pathway.">
+            <source src="static/videos/how_left.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <p class="tag">Left hand</p>
+            <h3>Direct kinesthetic arm guidance</h3>
+            <ul class="ticks">
+              <li>The arm runs in a gravity-compensated drag mode with zero position stiffness and low joint damping, with the joint-level controller at 200&nbsp;Hz.</li>
+              <li>A staged system identification (gravity direction, payload mass and center of mass, joint-wise torque scaling, Coulomb friction) corrects the model gravity torques.</li>
+              <li>Trajectories come straight from the joint encoders, with no pose estimation, retargeting, IK or Cartesian motion generation. Every recorded state was physically reached by the robot.</li>
+              <li>The rigid handle transmits contact forces, so the operator feels contact without a separate haptic device.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card pathway">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/how_right.jpg" width="1280" height="720"
+                 aria-label="A palm-facing webcam tracks the operator's right hand and the robot fingers follow, next to a diagram highlighting the right-hand pathway.">
+            <source src="static/videos/how_right.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <p class="tag">Right hand</p>
+            <h3>Vision-based finger retargeting</h3>
+            <ul class="ticks">
+              <li>A palm-facing webcam mounted 45&nbsp;cm below the hand streams at 30&nbsp;Hz into MediaPipe Hands, which returns 21 3D landmarks.</li>
+              <li>Wrist-relative landmarks are mapped to the 16-joint, 13-DoF MIDAS hand with the optimization-based dex-retargeting framework released with AnyTeleop.</li>
+              <li>No wrist pose is taken from the camera because the arm already sets it, so vision only handles hand-local finger articulation.</li>
+              <li>A 3D-printed forearm support keeps the palm centered in view and limits large wrist motion.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+
+      <dl class="specs">
+        <div><dt>Arm</dt><dd>Agilex PIPER, 6-DoF</dd></div>
+        <div><dt>Hand</dt><dd>MIDAS: 16 joints, 13 actuators, backdrivable, 283 tactile taxels</dd></div>
+        <div><dt>Handle</dt><dd>3D-printed PLA, 0.05&nbsp;kg, grip 65&nbsp;mm off the flange</dd></div>
+        <div><dt>Cameras</dt><dd>Luxonis OAK-1 wrist camera (wide FOV) + Logitech C270 for finger tracking</dd></div>
+        <div><dt>Logging</dt><dd>Arm &amp; hand 200&nbsp;Hz, tactile 60&nbsp;Hz, wrist camera 30&nbsp;Hz, aligned to 30&nbsp;Hz episodes</dd></div>
+      </dl>
+
+      <figure class="fig">
+        <img src="static/images/system_overview.webp" width="2400" height="1338" loading="lazy" decoding="async"
+             alt="System overview diagram: the left hand guides the arm, the right hand is tracked by a webcam and retargeted, joint, tactile and wrist-camera streams are recorded and synchronized, and a multimodal diffusion policy is trained and deployed.">
+        <figcaption><b>System overview.</b> Joint, visual and tactile observations are timestamped on one clock, aligned to the wrist-camera frames, and used to train a multimodal diffusion policy. At inference, the policy predicts action chunks from the current camera and tactile observations.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       INTERACTIVE 3D SLOT (intentionally left empty)
+       - The box below keeps a 16:9 ratio and is lazy-mounted by
+         static/js/main.js when it scrolls near the viewport.
+       - Implement mount(el) in the module named by data-module
+         (default: static/js/viewer3d.js). Remove the "is-empty"
+         class once your viewer is in place.
+       ================================================================ -->
+  <section class="section section-alt" id="explore-3d">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Interactive</p>
+        <h2>Explore DexDirect in 3D</h2>
+      </div>
+      <div id="viewer-3d" class="viewer-3d is-empty" data-module="static/js/viewer3d.js"
+           role="region" aria-label="Interactive 3D viewer">
+        <div class="viewer-3d-placeholder">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 9v20l-16 9-16-9V14z"/><path d="M8 14l16 9 16-9M24 23v20"/></svg>
+          <p>Interactive 3D viewer coming soon</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tasks -->
+  <section class="section" id="tasks">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Evaluation tasks</p>
+        <h2>Five contact-rich tasks</h2>
+        <p class="lead">
+          The tasks cover different arm-control demands: large-workspace positioning, sustained contact-force regulation, discrete precision contact and constrained extraction. Clips are real-time excerpts of DexDirect evaluation sessions. Numbers are user-study means.
+        </p>
+      </div>
+
+      <div class="tasks">
+        <article class="card task">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/task_jenga.jpg" width="640" height="480"
+                 aria-label="DexDirect pinching and extracting a Jenga block.">
+            <source src="static/videos/tasks/jenga.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <h3>Jenga extraction</h3>
+            <p>Pinch the designated block and pull it fully out without collapsing the stack. This tests precise placement, stable fingertip contact and gradual force regulation.</p>
+            <p class="task-stats"><span><b>94%</b> success</span><span><b>10.5&nbsp;s</b> per success</span><span><b>4.8&times;</b> faster than TeleDex</span></p>
+          </div>
+        </article>
+
+        <article class="card task">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/task_usb.jpg" width="640" height="480"
+                 aria-label="DexDirect grasping a USB connector and unplugging it from a socket.">
+            <source src="static/videos/tasks/usb.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <h3>USB unplugging</h3>
+            <p>Grasp the connector, align with its axis and pull until it fully leaves the socket. This tests a stable grasp and directed extraction force.</p>
+            <p class="task-stats"><span><b>95%</b> success</span><span><b>5.9&nbsp;s</b> per success</span><span><b>1.8&times;</b> faster than TeleDex</span></p>
+          </div>
+        </article>
+
+        <article class="card task">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/task_lazy_susan.jpg" width="640" height="480"
+                 aria-label="DexDirect rotating a Lazy Susan by hand contact, then grasping a cube and placing it in the target region.">
+            <source src="static/videos/tasks/lazy_susan.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <h3>Lazy Susan rotation &amp; pick-and-place</h3>
+            <p>Rotate the platform about 180&deg; through direct contact to bring the cube close, then grasp it and place it in the target region without dropping it.</p>
+            <p class="task-stats"><span><b>96%</b> success</span><span><b>8.4&nbsp;s</b> per success</span><span><b>2.6&times;</b> faster than TeleDex</span></p>
+          </div>
+        </article>
+
+        <article class="card task">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/task_whiteboard.jpg" width="640" height="480"
+                 aria-label="DexDirect holding an eraser and wiping a written word off a whiteboard.">
+            <source src="static/videos/tasks/whiteboard.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <h3>Whiteboard erasing</h3>
+            <p>Keep the eraser on the board while sweeping along it until the word &ldquo;robot&rdquo; is gone. This takes tangential motion and normal-force regulation at once.</p>
+            <p class="task-stats"><span><b>91%</b> success</span><span><b>13.9&nbsp;s</b> per success</span><span><b>2.8&times;</b> faster than TeleDex</span></p>
+          </div>
+        </article>
+
+        <article class="card task">
+          <video class="card-media" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/task_keyboard.jpg" width="640" height="480"
+                 aria-label="DexDirect pressing keys on a keyboard with a robot finger.">
+            <source src="static/videos/tasks/keyboard.mp4" type="video/mp4">
+          </video>
+          <div class="card-body">
+            <h3>Keyboard typing</h3>
+            <p>Type &ldquo;bot&rdquo; with every key registered in order and no wrong press. This tests repeated discrete contact with small targets.</p>
+            <p class="task-stats"><span><b>71%</b> success</span><span><b>6.6&nbsp;s</b> per success</span><span><b>2.7&times;</b> faster than TeleDex</span></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interfaces & user study -->
+  <section class="section section-alt" id="comparison">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">User study</p>
+        <h2>Three interfaces, one robot</h2>
+        <p class="lead">
+          The robot, dexterous hand, finger-retargeting pipeline, visual feedback and task setups were identical across conditions. The interfaces differ only in how the operator commands the global motion of the robot hand.
+        </p>
+      </div>
+
+      <figure class="fig">
+        <img src="static/images/interfaces.webp" width="2000" height="784" loading="lazy" decoding="async"
+             alt="Side-by-side photos of the three operator interfaces: DexDirect, TeleDex and AnyTeleop.">
+      </figure>
+
+      <div class="compare">
+        <div class="compare-item is-ours">
+          <h3>DexDirect <span class="pill">ours</span></h3>
+          <p>Drag the physical arm by a wrist-mounted handle. Arm motion is read from the joint encoders, and a webcam handles the fingers only.</p>
+        </div>
+        <div class="compare-item">
+          <h3>TeleDex</h3>
+          <p>A handheld smartphone in a 3D-printed wrist mount is tracked in free space to command the arm. We used the authors&rsquo; open-source software and hardware.</p>
+        </div>
+        <div class="compare-item">
+          <h3>AnyTeleop</h3>
+          <p>An Intel RealSense RGB-D camera estimates the operator&rsquo;s wrist pose. CuRobo&rsquo;s receding-horizon MPC at 120&nbsp;Hz turns it into joint trajectories.</p>
+        </div>
+      </div>
+
+      <div class="study">
+        <figure class="study-media">
+          <video class="media-frame" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/user_study.jpg" width="1280" height="488"
+                 aria-label="Montage of the ten user-study participants operating the robot across the five tasks.">
+            <source src="static/videos/user_study.mp4" type="video/mp4">
+          </video>
+        </figure>
+        <dl class="protocol">
+          <div><dt>Participants</dt><dd>10, with no prior experience on any of the three interfaces</dd></div>
+          <div><dt>Order</dt><dd>Counterbalanced across participants (ABC, BCA, CAB). All five tasks with one interface, then the next interface</dd></div>
+          <div><dt>Budget</dt><dd>1&nbsp;min practice per task, then as many successful repetitions as possible in 120&nbsp;s (180&nbsp;s for Jenga)</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section class="section" id="results">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Results</p>
+        <h2>More demonstrations, less workload</h2>
+        <p class="lead">
+          DexDirect had the highest success rate on every task and also finished successful trials faster: 1.8&ndash;4.8&times; faster than TeleDex, and 3.0&ndash;5.6&times; faster than AnyTeleop on the tasks where AnyTeleop succeeded at all. The throughput gain therefore does not come from simply attempting more often.
+        </p>
+      </div>
+
+      <figure class="chart" aria-labelledby="throughput-title">
+        <figcaption class="chart-head">
+          <span class="chart-title" id="throughput-title">Successful demonstrations collected</span>
+          <span class="chart-sub">All participants and tasks, same time budget per interface</span>
+        </figcaption>
+        <div class="hbar" role="list" style="--max: 481">
+          <div class="hbar-row is-ours" role="listitem" tabindex="0"
+               data-tip-value="481 demonstrations" data-tip-label="DexDirect · 3.2× TeleDex · 17.2× AnyTeleop">
+            <span class="hbar-label">DexDirect</span>
+            <span class="hbar-track"><span class="hbar-fill" style="--v: 481"></span><span class="hbar-value">481</span></span>
+          </div>
+          <div class="hbar-row" role="listitem" tabindex="0"
+               data-tip-value="151 demonstrations" data-tip-label="TeleDex · 31% of DexDirect">
+            <span class="hbar-label">TeleDex</span>
+            <span class="hbar-track"><span class="hbar-fill" style="--v: 151"></span><span class="hbar-value">151</span></span>
+          </div>
+          <div class="hbar-row" role="listitem" tabindex="0"
+               data-tip-value="28 demonstrations" data-tip-label="AnyTeleop · 6% of DexDirect">
+            <span class="hbar-label">AnyTeleop</span>
+            <span class="hbar-track"><span class="hbar-fill" style="--v: 28"></span><span class="hbar-value">28</span></span>
+          </div>
+        </div>
+      </figure>
+
+      <div class="table-card">
+        <p class="table-title" id="results-table-title">Per-task results <span>(mean &plusmn; SEM; completion time over successful trials)</span></p>
+        <div class="table-wrap">
+          <table class="results-table" aria-labelledby="results-table-title">
+            <thead>
+              <tr>
+                <th scope="col" rowspan="2" class="col-task">Task</th>
+                <th scope="colgroup" colspan="3" class="group">Success rate</th>
+                <th scope="colgroup" colspan="3" class="group group-start">Completion time (s)</th>
+              </tr>
+              <tr>
+                <th scope="col" class="col-ours">DexDirect</th><th scope="col">TeleDex</th><th scope="col">AnyTeleop</th>
+                <th scope="col" class="col-ours group-start">DexDirect</th><th scope="col">TeleDex</th><th scope="col">AnyTeleop</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Jenga extraction</th><td class="best">0.94 &plusmn; 0.02</td><td>0.69 &plusmn; 0.08</td><td>0.44 &plusmn; 0.12</td><td class="best group-start">10.46 &plusmn; 0.82</td><td>49.76 &plusmn; 5.98</td><td>35.50 &plusmn; 5.42</td></tr>
+              <tr><th scope="row">USB unplugging</th><td class="best">0.95 &plusmn; 0.02</td><td>0.81 &plusmn; 0.04</td><td>0.39 &plusmn; 0.09</td><td class="best group-start">5.88 &plusmn; 0.65</td><td>10.36 &plusmn; 1.90</td><td>17.75 &plusmn; 5.74</td></tr>
+              <tr><th scope="row">Lazy Susan pick-and-place</th><td class="best">0.96 &plusmn; 0.02</td><td>0.85 &plusmn; 0.06</td><td>0.50 &plusmn; 0.13</td><td class="best group-start">8.36 &plusmn; 0.49</td><td>21.96 &plusmn; 2.73</td><td>47.14 &plusmn; 11.15</td></tr>
+              <tr><th scope="row">Whiteboard erasing</th><td class="best">0.91 &plusmn; 0.04</td><td>0.56 &plusmn; 0.12</td><td>0.00 &plusmn; 0.00</td><td class="best group-start">13.85 &plusmn; 1.39</td><td>39.10 &plusmn; 7.82</td><td>&mdash;</td></tr>
+              <tr><th scope="row">Keyboard typing</th><td class="best">0.71 &plusmn; 0.04</td><td>0.32 &plusmn; 0.06</td><td>0.00 &plusmn; 0.00</td><td class="best group-start">6.60 &plusmn; 0.32</td><td>17.50 &plusmn; 3.97</td><td>&mdash;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="note">&mdash; AnyTeleop produced no successful whiteboard or keyboard trials. Participants struggled to regulate depth against the board, and latency turned brief key presses into repeated registrations.</p>
+
+      <div class="workload">
+        <div class="workload-text">
+          <h3>Workload (adapted NASA-TLX)</h3>
+          <p>DexDirect&rsquo;s overall Raw TLX score was <b>2.01</b>, compared with 3.08 for TeleDex and 3.81 for AnyTeleop. Paired Wilcoxon signed-rank tests showed a significant reduction relative to both baselines (<i>p</i>&nbsp;=&nbsp;0.0195 vs TeleDex, <i>p</i>&nbsp;=&nbsp;0.00195 vs AnyTeleop).</p>
+          <ul class="deltas">
+            <li><span>Mental demand</span><span class="from">3.19</span><span class="arrow" aria-hidden="true">&rarr;</span><b>1.77</b></li>
+            <li><span>Frustration</span><span class="from">2.79</span><span class="arrow" aria-hidden="true">&rarr;</span><b>1.47</b></li>
+            <li><span>Effort</span><span class="from">3.40</span><span class="arrow" aria-hidden="true">&rarr;</span><b>2.17</b></li>
+          </ul>
+          <p class="note">TeleDex &rarr; DexDirect. The one trade-off is physical demand, which rises to 3.23 (vs 2.72 TeleDex, 2.62 AnyTeleop). DexDirect replaces the cognitive effort of tracking, coordinate remapping and visual correction with the physical effort of moving a gravity-compensated arm.</p>
+        </div>
+        <figure class="fig workload-fig">
+          <img src="static/images/nasa_tlx.webp" width="2000" height="717" loading="lazy" decoding="async"
+               alt="Bar chart of mean adapted NASA-TLX scores per dimension for AnyTeleop, TeleDex and DexDirect. DexDirect is lowest on every dimension except physical demand.">
+          <figcaption>Mean adapted NASA-TLX scores across 10 participants and 5 tasks; error bars are 95% CIs. Lower is better, and performance is reverse-coded.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Policy -->
+  <section class="section section-alt" id="policy">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Policy learning</p>
+        <h2>From demonstrations to an autonomous policy</h2>
+        <p class="lead">
+          A single operator collected 200 DexDirect demonstrations, separate from the user study, for cube pick-and-place: lift a cube from the table and drop it onto a box 30&nbsp;cm away. The diffusion policy trained on them succeeds in <b>18 of 20</b> episodes (90%) with no operator intervention.
+        </p>
+      </div>
+
+      <div class="policy">
+        <figure class="policy-media">
+          <video class="media-frame" data-autoplay muted loop playsinline controls preload="none"
+                 poster="static/images/posters/policy_rollout.jpg" width="1280" height="720"
+                 aria-label="Autonomous policy rollouts: the robot grasps a blue cube, lifts it and places it onto a cardboard box.">
+            <source src="static/videos/policy_rollout.mp4" type="video/mp4">
+          </video>
+          <figcaption>Autonomous rollouts in real time, with a second camera view inset.</figcaption>
+        </figure>
+        <dl class="arch">
+          <div><dt>Vision</dt><dd>Wrist-camera RGB at 240&times;240 (random 224 crop + color jitter in training) through a DINOv2 ViT-S/14 encoder</dd></div>
+          <div><dt>Proprioception</dt><dd>13-D absolute hand joint positions</dd></div>
+          <div><dt>Touch</dt><dd>4-D PaXini tactile summary: mean and max for the thumb and index finger</dd></div>
+          <div><dt>Action</dt><dd>19-D chunks: relative 6-DoF end-effector target + 13 finger targets</dd></div>
+        </dl>
+      </div>
+
+      <figure class="fig rollout-strip">
+        <ol class="rollout-frames">
+          <li><img src="static/images/rollout_t00.webp" width="540" height="540" loading="lazy" decoding="async" alt="Rollout at t = 0 s: the hand above a cube on the table."><span>t = 0 s</span></li>
+          <li><img src="static/images/rollout_t05.webp" width="540" height="540" loading="lazy" decoding="async" alt="Rollout at t = 5 s: the hand grasping the cube."><span>t = 5 s</span></li>
+          <li><img src="static/images/rollout_t10.webp" width="540" height="540" loading="lazy" decoding="async" alt="Rollout at t = 10 s: the cube lifted above the box."><span>t = 10 s</span></li>
+          <li><img src="static/images/rollout_t15.webp" width="540" height="540" loading="lazy" decoding="async" alt="Rollout at t = 15 s: the cube placed on the box."><span>t = 15 s</span></li>
+        </ol>
+        <figcaption>A representative rollout from a randomized initial cube pose: grasp, lift, place on the target box.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Limitations -->
+  <section class="section" id="limitations">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Limitations</p>
+        <h2>What DexDirect does not do (yet)</h2>
+      </div>
+      <ul class="limits">
+        <li><b>Co-located by design.</b> It needs a robot capable of safe, low-impedance gravity-compensated guidance, does not support remote teleoperation, and may be less ergonomic for larger, higher-inertia arms.</li>
+        <li><b>Two operator hands for one arm-hand system.</b> Single-operator bimanual control would need each hand coupled to its own arm while its fingers are tracked. Visibility, ergonomics and safety of that design are open.</li>
+        <li><b>Finger control is still vision-based.</b> It depends on monocular landmarks and morphology-dependent retargeting, and there is no distributed fingertip force feedback.</li>
+        <li><b>Scope of evaluation.</b> The study covers ten participants, five short tasks, one platform and one policy task, and it measures the combined effect of direct coupling without isolating remapping, latency and contact cues.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- BibTeX -->
+  <section class="section section-alt" id="bibtex">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Citation</p>
+        <h2>BibTeX</h2>
+      </div>
+      <div class="bibtex">
+        <button class="copy-btn" type="button" data-copy="#bibtex-code">Copy</button>
+<pre><code id="bibtex-code">@inproceedings{kim2026dexdirect,
+  title     = {DexDirect: Direct Kinesthetic Arm Guidance for Efficient Dexterous Demonstration Collection},
+  author    = {Kim, Beom Jun and Wang, Shiu-Jen and Liu, Jonathan and Zhu, Alvin and
+               Wang, Quanyou and Fang, Hanzhang and Xu, Feng and Zhu, Mingzhang and
+               Cui, Yuchen and Hong, Dennis W.},
+  booktitle = {IEEE-RAS International Conference on Humanoid Robots (Humanoids)},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>DexDirect &middot; University of California, Los Angeles</p>
+    <a href="#top">Back to top &uarr;</a>
+  </div>
+</footer>
+
+</body>
+</html>
