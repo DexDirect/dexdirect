@@ -198,6 +198,12 @@
       if (started) return;
       started = true;
       const url = new URL(slot.dataset.module, document.baseURI).href;
+      // Browsers refuse module imports (and fetches) on pages opened from a file, so say how to view it instead.
+      if (location.protocol === 'file:') {
+        const p = slot.querySelector('.viewer-3d-placeholder p');
+        if (p) p.innerHTML = 'Browsers do not run the simulation on a page opened as a file. In this folder run <code>python3 -m http.server</code>, then open <a href="http://localhost:8000/#explore-3d">localhost:8000</a>.';
+        return;
+      }
       import(url)
         .then((m) => (typeof m.mount === 'function' ? m.mount(slot) : undefined))
         .catch((err) => console.warn('[viewer-3d] could not load viewer module:', err));
@@ -229,5 +235,64 @@
       };
       if (mq.addEventListener) mq.addEventListener('change', onChange); else mq.addListener(onChange);
     });
+  }
+
+  /* 11. Method walk-through. Once .is-live is set, CSS pins the clip band under the nav and the diagram under the
+         band. The step whose top has crossed the reading line becomes active: data-active on .scrolly dims the
+         other side of the clip, shows that hand's label and moves the diagram highlight. */
+  const scrolly = document.getElementById('method-scrolly');
+  const band = scrolly && scrolly.querySelector('.scrolly-video');
+  const diagram = scrolly && scrolly.querySelector('.scrolly-diagram');
+  const steps = scrolly ? [...scrolly.querySelectorAll('.step')] : [];
+  if (band && diagram && steps.length) {
+    const tabs = [...scrolly.querySelectorAll('[data-goto]')];
+    const tabBar = scrolly.querySelector('.stage-tabs');
+    const stacked = window.matchMedia('(max-width: 860px), (max-height: 599px)');   // same query as style.css
+    let active = null;
+    let pinnedBottom = 0;      // viewport y where the pinned part ends (the band; stacked, the diagram row too)
+
+    scrolly.classList.add('is-live');
+    if (tabBar) tabBar.hidden = false;
+
+    const place = () => {
+      const bandH = band.offsetHeight;
+      scrolly.style.setProperty('--band-h', `${bandH}px`);
+      pinnedBottom = (nav ? nav.offsetHeight : 0) + bandH + (stacked.matches ? diagram.offsetHeight : 0);
+    };
+    // The reading line sits a little above the middle of the space under the pinned part.
+    const lineY = () => pinnedBottom + (window.innerHeight - pinnedBottom) * 0.45;
+
+    const setStep = (step) => {
+      if (step === active) return;
+      active = step;
+      const key = step.dataset.step;
+      scrolly.dataset.active = key;
+      steps.forEach((s) => s.classList.toggle('is-active', s === step));
+      tabs.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.goto === key)));
+    };
+    const update = () => {
+      const y = lineY();
+      let pick = steps[0];
+      for (const s of steps) if (s.getBoundingClientRect().top <= y) pick = s;
+      setStep(pick);
+    };
+
+    // A tab brings its step's text up to just under the pinned part (if that still makes it the active one;
+    // otherwise it centers the step on the reading line).
+    tabs.forEach((b) => b.addEventListener('click', () => {
+      const step = steps.find((s) => s.dataset.step === b.dataset.goto);
+      if (!step) return;
+      const r = step.getBoundingClientRect();
+      const line = lineY();
+      const textTop = (step.firstElementChild || step).getBoundingClientRect().top;
+      let target = textTop - pinnedBottom - 24;
+      if (!(r.top - target <= line && r.bottom - target > line)) target = r.top + r.height / 2 - line;
+      window.scrollBy({ top: target, behavior: reduceMotion ? 'auto' : 'smooth' });
+    }));
+
+    window.addEventListener('scroll', onFrame(update), { passive: true });
+    window.addEventListener('resize', onFrame(() => { place(); update(); }));
+    place();
+    update();
   }
 })();

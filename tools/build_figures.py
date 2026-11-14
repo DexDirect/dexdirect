@@ -13,6 +13,9 @@ OUT = 'static/images'
 FIGS = {  # name: (page, region, dpi, max width, webp quality)
     'teaser_setup':    (1, (313, 190, 558, 344), 600, 1800, 88),  # Fig. 1
     'system_overview': (3, (54, 50, 558, 342),   400, 2400, 88),  # Fig. 2
+    # Fig. 2, "Data Collection" panel inside its grey border, for the Method scroll section. The highlight boxes in
+    # style.css (.stage[data-active]) are percentages of this crop: re-measure them if the region changes.
+    'method_diagram':  (3, (62.16, 71.6, 262.44, 327.8), 600, 1200, 90),
     'interfaces':      (4, (54, 168, 299, 281),  600, 2000, 90),  # Fig. 4
     'nasa_tlx':        (6, (54, 50, 299, 142),   600, 2000, 92),  # Fig. 5
 }

@@ -29,12 +29,12 @@
   <a class="nav-brand" href="#top">DexDirect</a>
   <div class="nav-center">
     <a href="#overview">Overview</a>
-    <a href="#video">Video</a>
     <a href="#method">Method</a>
-    <a href="#explore-3d">3D</a>
+    <a href="#explore-3d">Simulation</a>
     <a href="#tasks">Tasks</a>
     <a href="#results">Results</a>
     <a href="#policy">Policy</a>
+    <a href="#video">Video</a>
   </div>
   <div class="nav-right">
     <a href="static/pdf/DexDirect_Humanoids_2026.pdf" target="_blank" rel="noopener">Paper</a>
@@ -52,13 +52,13 @@
   </div>
   <nav class="drawer-links" aria-label="Sections">
     <a href="#overview">Overview</a>
-    <a href="#video">Video</a>
     <a href="#method">Method</a>
-    <a href="#explore-3d">3D</a>
+    <a href="#explore-3d">Simulation</a>
     <a href="#tasks">Tasks</a>
     <a href="#comparison">Interfaces</a>
     <a href="#results">Results</a>
     <a href="#policy">Policy</a>
+    <a href="#video">Video</a>
     <a href="#bibtex">BibTeX</a>
     <a href="static/pdf/DexDirect_Humanoids_2026.pdf" target="_blank" rel="noopener">Paper (PDF)</a>
     <a href="https://arxiv.org/abs/2607.27784" target="_blank" rel="noopener">arXiv</a>
@@ -123,16 +123,16 @@
   <!-- ========== Overview ========== -->
   <section class="section" id="overview">
     <div class="container narrow center">
-      <!-- TODO: wrap names in <a href="..."> to link personal homepages -->
+      <!-- Names link to personal pages where the author has one; wrap others the same way. -->
       <ul class="authors">
-        <li>Beom Jun Kim<sup>1</sup></li>
+        <li><a href="https://junkeem.com/" target="_blank" rel="noopener">Beom Jun Kim</a><sup>1</sup></li>
         <li>Shiu-Jen Wang<sup>1</sup></li>
-        <li>Jonathan Liu<sup>2</sup></li>
-        <li>Alvin Zhu<sup>2,3</sup></li>
+        <li><a href="https://www.linkedin.com/in/jonathanhliu21/" target="_blank" rel="noopener">Jonathan Liu</a><sup>2</sup></li>
+        <li><a href="https://alvinzhu.org/" target="_blank" rel="noopener">Alvin Zhu</a><sup>2,3</sup></li>
         <li>Quanyou Wang<sup>1</sup></li>
         <li>Hanzhang Fang<sup>2,3</sup></li>
         <li>Feng Xu<sup>1</sup></li>
-        <li>Mingzhang Zhu<sup>1</sup></li>
+        <li><a href="https://mingzhangzhu.org/" target="_blank" rel="noopener">Mingzhang Zhu</a><sup>1</sup></li>
         <li>Yuchen Cui<sup>3&dagger;</sup></li>
         <li>Dennis W. Hong<sup>1&dagger;</sup></li>
       </ul>
@@ -160,22 +160,6 @@
     </div>
   </section>
 
-  <!-- ========== Video ========== -->
-  <section class="section section-dark" id="video">
-    <div class="container">
-      <div class="head center">
-        <h2 class="title">Watch DexDirect</h2>
-        <p class="subtitle">Supplementary video &middot; 1:12</p>
-      </div>
-      <video class="media media-wide" controls preload="none" playsinline
-             poster="static/images/posters/dexdirect_video.jpg" width="1920" height="1080"
-             aria-label="DexDirect supplementary video">
-        <source src="static/videos/dexdirect_video.mp4" type="video/mp4">
-        <a href="static/videos/dexdirect_video.mp4">Download the video (MP4)</a>
-      </video>
-    </div>
-  </section>
-
   <!-- ========== Method ========== -->
   <section class="section" id="method">
     <div class="container">
@@ -186,46 +170,109 @@
         </p>
       </div>
 
-      <article class="feature">
-        <video class="media" data-autoplay muted loop playsinline controls preload="none"
-               poster="static/images/posters/how_left.jpg" width="1280" height="720"
-               aria-label="The operator's left hand drags the robot arm by its handle, next to a diagram highlighting the left-hand pathway.">
-          <source src="static/videos/how_left.mp4" type="video/mp4">
-        </video>
-        <div class="feature-text">
-          <p class="kicker">Left hand</p>
-          <h3 class="feature-title">Drag the Arm</h3>
-          <p>The arm runs in a gravity-compensated drag mode with zero position stiffness and low joint damping. A staged system identification corrects the model gravity torques for payload, torque scaling and friction. Trajectories come straight from the joint encoders, with no pose estimation, retargeting or IK, and the rigid handle lets the operator feel contact.</p>
-          <dl class="feature-specs">
-            <div><dt>200 Hz</dt><dd>joint-level control</dd></div>
-            <div><dt>0</dt><dd>position stiffness</dd></div>
-            <div><dt>0.05 kg</dt><dd>3D-printed handle</dd></div>
-          </dl>
+      <!-- Scroll-driven walk-through. The wide clip pins under the nav, the diagram pins below it, and the steps
+           scroll past beside the diagram. static/js/main.js sets data-active on .scrolly for the step at the
+           reading line: that dims the other side of the clip (.video-dim-*), shows its hand label and moves the
+           diagram highlight (.scrolly[data-active] rules in style.css). Without JS everything reads in order. -->
+      <div class="scrolly" id="method-scrolly" data-active="left">
+        <div class="scrolly-video">
+          <div class="stage-video">
+            <video data-autoplay muted loop playsinline controls preload="none"
+                   poster="static/images/posters/method.jpg" width="1920" height="640"
+                   aria-label="Front view of the station. The operator's left hand drags the robot arm by its handle while the robot hand pulls a Jenga block; the right hand rests above a palm-facing webcam, and the monitor shows the wrist-camera and hand-tracking views.">
+              <source src="static/videos/method.mp4" type="video/mp4">
+            </video>
+            <span class="video-dim video-dim-l" aria-hidden="true"></span>
+            <span class="video-dim video-dim-r" aria-hidden="true"></span>
+            <!-- The camera faces the operator, so the left hand is on the right of the frame. -->
+            <span class="video-tag video-tag-l" aria-hidden="true">Left hand</span>
+            <span class="video-tag video-tag-r" aria-hidden="true">Right hand</span>
+          </div>
         </div>
-      </article>
 
-      <article class="feature feature-flip">
-        <video class="media" data-autoplay muted loop playsinline controls preload="none"
-               poster="static/images/posters/how_right.jpg" width="1280" height="720"
-               aria-label="A palm-facing webcam tracks the operator's right hand and the robot fingers follow, next to a diagram highlighting the right-hand pathway.">
-          <source src="static/videos/how_right.mp4" type="video/mp4">
-        </video>
-        <div class="feature-text">
-          <p class="kicker">Right hand</p>
-          <h3 class="feature-title">Webcam the Fingers</h3>
-          <p>A palm-facing webcam feeds MediaPipe Hands, and wrist-relative landmarks are mapped to the MIDAS hand with the dex-retargeting framework released with AnyTeleop. The camera never estimates the wrist pose because the arm already sets it. A 3D-printed forearm support keeps the palm centered in view.</p>
-          <dl class="feature-specs">
-            <div><dt>30 Hz</dt><dd>hand tracking</dd></div>
-            <div><dt>21</dt><dd>3D hand landmarks</dd></div>
-            <div><dt>16 / 13</dt><dd>robot joints / DoF</dd></div>
-          </dl>
+        <div class="scrolly-diagram">
+          <div class="stage-diagram">
+            <div class="stage-diagram-inner">
+              <img src="static/images/method_diagram.webp" width="1200" height="1535" loading="lazy" decoding="async"
+                   alt="Data-collection diagram. The operator's left hand moves the arm through a handle in gravity-compensation mode. The right hand is filmed by a webcam, tracked with MediaPipe and retargeted with dex-retargeting at 30 Hz. The arm and hand joint encoders (200 Hz), tactile sensors (60 Hz) and wrist camera (30 Hz) are recorded while the pedal is pressed, then processed into aligned data.">
+              <span class="stage-hl" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="stage-tabs" role="group" aria-label="Pathway" hidden>
+            <button type="button" data-goto="left">Left hand</button>
+            <button type="button" data-goto="right">Right hand</button>
+            <button type="button" data-goto="record">Recording</button>
+          </div>
         </div>
-      </article>
+
+        <div class="scrolly-steps">
+          <article class="step" data-step="left">
+            <div class="feature-text">
+              <p class="kicker">Left hand</p>
+              <h3 class="feature-title">Drag the Arm</h3>
+              <p>The arm runs in a gravity-compensated drag mode with zero position stiffness and low joint damping. A staged system identification corrects the model gravity torques for payload, torque scaling and friction. Trajectories come straight from the joint encoders, with no pose estimation, retargeting or IK, and the rigid handle lets the operator feel contact.</p>
+              <dl class="feature-specs">
+                <div><dt>200 Hz</dt><dd>joint-level control</dd></div>
+                <div><dt>0</dt><dd>position stiffness</dd></div>
+                <div><dt>0.05 kg</dt><dd>3D-printed handle</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <article class="step" data-step="right">
+            <div class="feature-text">
+              <p class="kicker">Right hand</p>
+              <h3 class="feature-title">Track the Fingers</h3>
+              <p>A palm-facing webcam feeds MediaPipe Hands, and wrist-relative landmarks are mapped to the MIDAS hand with the dex-retargeting framework released with AnyTeleop. The camera never estimates the wrist pose because the arm already sets it. A 3D-printed forearm support keeps the palm centered in view.</p>
+              <dl class="feature-specs">
+                <div><dt>30 Hz</dt><dd>hand tracking</dd></div>
+                <div><dt>21</dt><dd>3D hand landmarks</dd></div>
+                <div><dt>16 / 13</dt><dd>robot joints / DoF</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <article class="step" data-step="record">
+            <div class="feature-text">
+              <p class="kicker">Foot pedal</p>
+              <h3 class="feature-title">Record the Robot</h3>
+              <p>The pedal starts recording. Because the operator moves the robot itself, the robot&rsquo;s own sensors are the record: arm and hand joint states, tactile readings and wrist-camera images, all stamped by one clock on the logging computer. For training, each stream is matched to the nearest wrist-camera frame, without interpolation, to form 30 Hz episodes.</p>
+              <dl class="feature-specs">
+                <div><dt>200 Hz</dt><dd>arm &amp; hand states</dd></div>
+                <div><dt>60 Hz</dt><dd>tactile</dd></div>
+                <div><dt>30 Hz</dt><dd>wrist camera &amp; episodes</dd></div>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       PLAYGROUND: MuJoCo (WebAssembly) simulation of the station. Drag the handle, drive the hand from a webcam.
+       static/js/main.js lazy-imports static/js/playground.js when the box nears the viewport; the module shows a
+       start button and loads the engine only on click. Model: static/sim/ (tools/sim/build_sim.py);
+       visuals: static/3d/robot.glb (tools/build_3d.sh).
+       ================================================================ -->
+  <section class="section section-black" id="explore-3d">
+    <div class="container">
+      <div class="head center">
+        <h2 class="title">Try It in Simulation</h2>
+        <p class="subtitle">A MuJoCo model of the station, running in your browser. Drag the arm by its orange handle as you would the real one, drive the hand with your webcam (or the grip slider), and play with the cubes. Reset puts everything back.</p>
+      </div>
+      <div id="viewer-3d" class="viewer-3d is-empty" data-module="static/js/playground.js"
+           role="region" aria-label="Interactive simulation">
+        <div class="viewer-3d-placeholder">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 9v20l-16 9-16-9V14z"/><path d="M8 14l16 9 16-9M24 23v20"/></svg>
+          <p>The simulation needs JavaScript, WebGL and WebAssembly.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ========== Hardware ========== -->
-  <section class="section section-alt" id="hardware">
+  <section class="section" id="hardware">
     <div class="container hardware">
       <figure class="hardware-figure">
         <img src="static/images/teaser_setup.webp" width="1800" height="1099" loading="lazy" decoding="async"
@@ -246,39 +293,16 @@
   </section>
 
   <!-- ========== System overview ========== -->
-  <section class="section" id="system">
+  <section class="section section-alt" id="system">
     <div class="container">
       <div class="head center">
         <h2 class="title">System Overview</h2>
         <p class="subtitle">Joint, tactile and wrist-camera streams share one clock and are aligned to the camera frames, forming 30 Hz episodes for a multimodal diffusion policy.</p>
       </div>
-      <figure class="figure">
+      <figure class="figure figure-panel">
         <img src="static/images/system_overview.webp" width="2400" height="1338" loading="lazy" decoding="async"
              alt="System overview diagram: the left hand guides the arm, the right hand is tracked by a webcam and retargeted, joint, tactile and wrist-camera streams are recorded and synchronized, and a multimodal diffusion policy is trained and deployed.">
       </figure>
-    </div>
-  </section>
-
-  <!-- ================================================================
-       INTERACTIVE 3D SLOT (intentionally left empty)
-       - The box keeps a 16:9 ratio and is lazy-mounted by static/js/main.js
-         when it scrolls near the viewport.
-       - Implement mount(el) in the module named by data-module
-         (default: static/js/viewer3d.js). Remove "is-empty" once mounted.
-       ================================================================ -->
-  <section class="section section-black" id="explore-3d">
-    <div class="container">
-      <div class="head center">
-        <h2 class="title">Explore in 3D</h2>
-        <p class="subtitle">Orbit around the DexDirect station.</p>
-      </div>
-      <div id="viewer-3d" class="viewer-3d is-empty" data-module="static/js/viewer3d.js"
-           role="region" aria-label="Interactive 3D viewer">
-        <div class="viewer-3d-placeholder">
-          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l16 9v20l-16 9-16-9V14z"/><path d="M8 14l16 9 16-9M24 23v20"/></svg>
-          <p>Interactive 3D viewer coming soon</p>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -518,18 +542,19 @@
     </div>
   </section>
 
-  <!-- ========== Limitations ========== -->
-  <section class="section" id="limitations">
+  <!-- ========== Video ========== -->
+  <section class="section" id="video">
     <div class="container">
       <div class="head center">
-        <h2 class="title">Limitations</h2>
+        <h2 class="title">Watch DexDirect</h2>
+        <p class="subtitle">Supplementary video &middot; 1:12</p>
       </div>
-      <div class="limits">
-        <div><h3>Co-located by design</h3><p>Needs a robot that supports safe, low-impedance gravity-compensated guidance, does not support remote teleoperation, and may be less ergonomic for larger, higher-inertia arms.</p></div>
-        <div><h3>Two hands, one arm</h3><p>Both operator hands drive one arm-hand system. Single-operator bimanual control would need each hand coupled to its own arm while its fingers are tracked.</p></div>
-        <div><h3>Vision-based fingers</h3><p>Finger control depends on monocular landmarks and morphology-dependent retargeting, with no distributed fingertip force feedback.</p></div>
-        <div><h3>Scope of evaluation</h3><p>Ten participants, five short tasks, one platform and one policy task. Remapping, latency and contact cues are not yet isolated.</p></div>
-      </div>
+      <video class="media media-wide" controls preload="none" playsinline
+             poster="static/images/posters/dexdirect_video.jpg" width="1920" height="1080"
+             aria-label="DexDirect supplementary video">
+        <source src="static/videos/dexdirect_video.mp4" type="video/mp4">
+        <a href="static/videos/dexdirect_video.mp4">Download the video (MP4)</a>
+      </video>
     </div>
   </section>
 

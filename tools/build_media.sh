@@ -42,8 +42,18 @@ hero() {  # cut av1-crf hevc-crf h264-crf
 hero wide     40 29 27     # ~8.4 / 8.6 / 9.9 MB, VMAF 92-94 against the master
 hero portrait 40 28 27     # ~5.1 / 6.4 / 6.4 MB
 
+# Method scroll section: the same iPhone clip, 2:17.2-2:26.0, the full width of the frame below y = 880. There the
+# operator's face never comes lower than y = 819 (YuNet, 5 fps), so no blur is needed. Tone-mapped like the hero,
+# 1920x640, no upscaling. The page dims one side of it per step. The last 0.5 s dissolves into the first 0.5 s so
+# the loop has no jump.
+TM_SDR="zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:param=0.3:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
+"$FF" -y -loglevel error -ss 137.2 -t 8.8 -i "$RAW/IMG_9573.MOV" -filter_complex \
+  "[0:v]crop=3840:1280:0:880,$TM_SDR,scale=1920:640:flags=lanczos,fps=30000/1001,setpts=PTS-STARTPTS,split[a][b];[a]trim=start=0.5,setpts=PTS-STARTPTS[body];[b]trim=end=0.5,setpts=PTS-STARTPTS[head];[body][head]xfade=transition=fade:duration=0.5:offset=7.8,format=yuv420p[v]" \
+  -map "[v]" -c:v libx264 -preset slow -profile:v high -crf 23 -g 60 "${TAGS[@]}" "$V/method.mp4"
+
 # Segments of the final supplementary video (its audio track is silent, so it is dropped).
 "$FF" -y -loglevel error -i "$FINAL" -map 0:v:0 -c:v copy -an -movflags +faststart "$V/dexdirect_video.mp4"
+# how_left / how_right: the two-row Method layout kept in backup/v1-classic (the live page uses method.mp4).
 "$FF" -y -loglevel error -ss 16.3  -t 6.35  -i "$FINAL" -vf "scale=1280:720:flags=lanczos" -crf 24 "${X264[@]}" "$V/how_left.mp4"
 "$FF" -y -loglevel error -ss 22.8  -t 6.35  -i "$FINAL" -vf "scale=1280:720:flags=lanczos" -crf 24 "${X264[@]}" "$V/how_right.mp4"
 "$FF" -y -loglevel error -ss 36.7  -t 10    -i "$FINAL" -vf "crop=1840:700:40:160,scale=1280:488:flags=lanczos,setsar=1" -crf 25 "${X264[@]}" "$V/user_study.mp4"
@@ -68,6 +78,7 @@ poster "$V/hero_portrait.mp4"  0   "$P/hero_portrait.jpg"
 poster "$V/dexdirect_video.mp4" 8  "$P/dexdirect_video.jpg"
 poster "$V/how_left.mp4"       0.5 "$P/how_left.jpg"
 poster "$V/how_right.mp4"      0.5 "$P/how_right.jpg"
+poster "$V/method.mp4"         0   "$P/method.jpg"
 poster "$V/user_study.mp4"     1   "$P/user_study.jpg"
 poster "$V/policy_rollout.mp4" 3   "$P/policy_rollout.jpg"
 for n in jenga usb lazy_susan whiteboard keyboard; do poster "$V/tasks/$n.mp4" 0.4 "$P/task_$n.jpg"; done
