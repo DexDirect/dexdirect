@@ -73,7 +73,7 @@ tools/                     scripts that regenerate the media from the raw footag
 |---|---|
 | `videos/hero_wide.*`, `hero_portrait.*` | `IMG_9573.MOV` 1:32–1:52, iPhone 4K HDR (HLG) tone-mapped to SDR, cropped below the operator's face and AI-upscaled frame by frame (Real-ESRGAN `realesr-general-x4v3`, `tools/render_hero.py`). `wide` is 2560×1440; `portrait` is 1080×1920 and its crop follows the robot hand. Portrait screens (≤ 3:4) get `portrait` through `<source media>`. Each cut is AV1 (`.av1.mp4`), HEVC (`.hevc.mp4`, for Safari) and H.264 (`.mp4`) |
 | `videos/dexdirect_video.mp4` | `ICHR26_0289_VI_fi.mp4` (final video), video stream copied. Its audio track is silent |
-| `videos/method.mp4` | Method scroll section: `IMG_9573.MOV` 2:17.2–2:26.0, the full width of the frame below y = 880 in 4K (the operator's face stays above y = 819 there), tone-mapped to SDR like the hero, 1920×640. The last 0.5 s dissolves into the first so the loop is seamless |
+| `videos/method.mp4` | Method scroll section: `IMG_9573.MOV` 1:37.55–1:53.65 (the arm is guided to the Jenga tower, grasps a block and pulls it out), the full width of the frame below y = 880 in 4K (the operator's face stays above y = 771 there), tone-mapped to SDR like the hero, 1920×640. The last 0.5 s dissolves into the first so the loop is seamless |
 | `videos/how_left.mp4`, `how_right.mp4` | final video 16.3–22.65 s and 22.8–29.15 s, full frame. Used only by the two-row layout in `backup/v1-classic/` |
 | `videos/user_study.mp4` | final video 36.7–46.7 s, title cropped off |
 | `videos/policy_rollout.mp4` | final video 46.85 s–end |

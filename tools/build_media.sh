@@ -42,13 +42,15 @@ hero() {  # cut av1-crf hevc-crf h264-crf
 hero wide     40 29 27     # ~8.4 / 8.6 / 9.9 MB, VMAF 92-94 against the master
 hero portrait 40 28 27     # ~5.1 / 6.4 / 6.4 MB
 
-# Method scroll section: the same iPhone clip, 2:17.2-2:26.0, the full width of the frame below y = 880. There the
-# operator's face never comes lower than y = 819 (YuNet, 5 fps), so no blur is needed. Tone-mapped like the hero,
-# 1920x640, no upscaling. The page dims one side of it per step. The last 0.5 s dissolves into the first 0.5 s so
-# the loop has no jump.
+# Method scroll section: the same iPhone clip, 1:37.55-1:53.65 (the arm is guided to the Jenga tower, the fingers
+# grasp a block and the arm pulls it out), the full width of the frame below y = 880. There the operator's face never
+# comes lower than y = 771 (YuNet, 5 fps, ignoring the small static false positives in the background), so no blur
+# is needed. Tone-mapped like the hero, 1920x640, no upscaling. The page dims one side of it per step. The window
+# starts and ends in nearly the same pose, and the last 0.5 s dissolves into the first 0.5 s, so the loop has no jump.
+# (The earlier 2:17.2-2:26.0 window mostly showed the arm holding a block still.)
 TM_SDR="zscale=t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=mobius:param=0.3:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p"
-"$FF" -y -loglevel error -ss 137.2 -t 8.8 -i "$RAW/IMG_9573.MOV" -filter_complex \
-  "[0:v]crop=3840:1280:0:880,$TM_SDR,scale=1920:640:flags=lanczos,fps=30000/1001,setpts=PTS-STARTPTS,split[a][b];[a]trim=start=0.5,setpts=PTS-STARTPTS[body];[b]trim=end=0.5,setpts=PTS-STARTPTS[head];[body][head]xfade=transition=fade:duration=0.5:offset=7.8,format=yuv420p[v]" \
+"$FF" -y -loglevel error -ss 97.55 -t 16.1 -i "$RAW/IMG_9573.MOV" -filter_complex \
+  "[0:v]crop=3840:1280:0:880,$TM_SDR,scale=1920:640:flags=lanczos,fps=30000/1001,setpts=PTS-STARTPTS,split[a][b];[a]trim=start=0.5,setpts=PTS-STARTPTS[body];[b]trim=end=0.5,setpts=PTS-STARTPTS[head];[body][head]xfade=transition=fade:duration=0.5:offset=15.1,format=yuv420p[v]" \
   -map "[v]" -c:v libx264 -preset slow -profile:v high -crf 23 -g 60 "${TAGS[@]}" "$V/method.mp4"
 
 # Segments of the final supplementary video (its audio track is silent, so it is dropped).
