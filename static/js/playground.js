@@ -5,7 +5,8 @@
      compensated with no position stiffness, like the real drag mode. The mouse wheel moves the target in depth,
      Q / E roll the wrist.
    - "Use my webcam": MediaPipe Hands landmarks are retargeted to the 13 MIDAS finger actuators with the team's own
-     mapping (ported from midas_hand_retargeter); Calibrate / C sets the current hand pose as the open hand.
+     mapping (ported from midas_hand_retargeter). C (or Calibrate) resets the hand mapping: the first press shows the
+     reference pose in the top-right corner, a second press in that pose makes it the robot's open hand (Esc cancels).
      Without a webcam, the grip slider or the space bar closes the hand.
    - Reset puts the arm, the hand and the cubes back.
    Model: static/sim/dexdirect.xml (tools/sim/build_sim.py). Visuals: static/3d/robot.glb (STEP geometry). */
@@ -310,7 +311,7 @@ async function start(el, ui) {
   const limits = {};
   meta.actuators.forEach((a, i) => { limits[a.replace('_xm335_t323_t', '')] = ctrlRange[i]; });
   const rt = makeMidasRetargeter(limits);
-  let webcam = null;
+  let webcam = null, handFresh = false, posing = false;
   async function webcamOn() {
     ui.webcam('loading');
     try {
@@ -326,16 +327,27 @@ async function start(el, ui) {
     rt.reset();
     ui.webcam('on');
   }
-  function webcamOff() { if (webcam) webcam.stop(); webcam = null; rt.clearCalibration(); ui.webcam('off'); setGrip(ui.gripValue()); }
+  function webcamOff() { if (webcam) webcam.stop(); webcam = null; handFresh = false; setPosing(false); rt.clearCalibration(); ui.webcam('off'); setGrip(ui.gripValue()); }
+  function setPosing(on) { posing = on; ui.pose(on); }
+  // C or the Calibrate button. The first press shows the reference pose; a second press, made while holding it, maps
+  // that pose to the robot's open hand (every joint at zero).
+  function handMapping() {
+    if (!webcam) { ui.flash('C resets the hand mapping while the webcam is on.'); return; }
+    if (!posing) { setPosing(true); return; }
+    if (!handFresh || !rt.calibrate()) { ui.flash('No hand in view. Hold it up to the camera in the pose and try again.'); return; }
+    setPosing(false);
+    ui.flash('Hand mapping reset: this pose is now the robot\'s open hand.');
+  }
   ui.onWebcam(() => (webcam ? webcamOff() : webcamOn()));
   ui.onGrip((u) => { if (!webcam) setGrip(u); });
-  ui.onCalibrate(() => { if (webcam && rt.calibrate()) ui.flash('Neutral set: your current hand pose is now the robot\'s open hand.'); });
+  ui.onCalibrate(handMapping);
   ui.onReset(() => { reset(); data.xfrc_applied.fill(0); endDrag(); rt.reset(); if (!webcam) setGrip(ui.gripValue()); });
   window.addEventListener('keydown', (ev) => {
     if (!visible || (ev.target && ev.target.closest && ev.target.closest('input, textarea, select'))) return;
     if (ev.key === ' ' && !webcam) { ev.preventDefault(); setGrip(1); ui.setGrip(1); }
     if ((ev.key === 'q' || ev.key === 'e') && drag.on) rollHold(ev.key === 'q' ? 0.12 : -0.12);
-    if (ev.key === 'c' && webcam && rt.calibrate()) ui.flash('Neutral set: your current hand pose is now the robot\'s open hand.');
+    if ((ev.key === 'c' || ev.key === 'C') && !ev.repeat && !ev.ctrlKey && !ev.metaKey && !ev.altKey) handMapping();
+    if (ev.key === 'Escape' && posing) setPosing(false);
   });
   window.addEventListener('keyup', (ev) => { if (ev.key === ' ' && !webcam) { setGrip(0); ui.setGrip(0); } });
 
@@ -353,6 +365,7 @@ async function start(el, ui) {
     if (webcam) {
       const res = webcam.latest();
       const fresh = res && now - res.at < 500;
+      handFresh = !!fresh;
       ui.tracking(fresh ? res : null);
       if (fresh && res.at !== rt.lastAt) { rt.lastAt = res.at; const q = rt.retarget(res.world); for (const [n, v] of Object.entries(q)) if (n in actIdx) target[actIdx[n]] = v; }
     }
@@ -543,10 +556,10 @@ function buildUI(el) {
         <p class="pg-note">About 4 MB to download. Best on a laptop or desktop.</p>
       </div>
     </div>
-    <p class="pg-hint" hidden><span>Drag the orange handle</span> to move the arm. Wheel: depth. Q / E: roll the wrist.</p>
+    <p class="pg-hint" hidden><span>Drag the orange handle</span> to move the arm. Wheel: depth. Q / E: roll the wrist. C: reset hand mapping.</p>
     <div class="pg-bar" hidden>
       <button class="pg-btn pg-cam" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h3l2-2.5h8L18 8h3v11H3z"/><circle cx="12" cy="13" r="3.6"/></svg><span>Use my webcam</span></button>
-      <button class="pg-btn pg-cal" type="button" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/></svg><span>Calibrate</span></button>
+      <button class="pg-btn pg-cal" type="button" title="Reset hand mapping (C)" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="5"/></svg><span>Calibrate</span></button>
       <label class="pg-grip"><span>Grip</span><input type="range" min="0" max="100" value="0" aria-label="Close the hand"></label>
       <button class="pg-btn pg-reset" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4.5h4.5"/></svg><span>Reset</span></button>
     </div>
@@ -555,11 +568,24 @@ function buildUI(el) {
       <canvas class="pg-lm" aria-hidden="true"></canvas>
       <p class="pg-note">Hand tracking runs on your device. No video is uploaded.</p>
     </div>
+    <div class="pg-pose" role="group" aria-label="Reset hand mapping" hidden>
+      <svg viewBox="0 0 60 84" aria-hidden="true"><rect x="20" y="18" width="6.5" height="34" rx="3.25"/><rect x="29" y="10" width="6.5" height="42" rx="3.25"/><rect x="38" y="14" width="6.5" height="38" rx="3.25"/><rect x="47" y="23" width="6" height="30" rx="3"/><path d="M20 44h33v16c0 11-7 18-16.5 18S20 71 20 60z"/><rect x="18.75" y="35" width="6.5" height="24" rx="3.25" transform="rotate(-45 22 59)"/></svg>
+      <div>
+        <p class="pg-pose-title">Hold this pose</p>
+        <ul><li>Palm toward the camera</li><li>Fingers straight and together</li><li>Thumb open, about 45&deg; from the fingers</li></ul>
+        <p class="pg-pose-key">Press <kbd>C</kbd> in this position</p>
+        <p class="pg-pose-esc">Esc to cancel</p>
+      </div>
+    </div>
     <p class="pg-status" role="status"></p>
     <div class="pg-loading" hidden><span>Loading</span><i><b></b></i></div>`;
   el.appendChild(w);
   const $ = (s) => w.querySelector(s);
-  if (window.matchMedia && matchMedia('(pointer: coarse)').matches) $('.pg-hint').lastChild.textContent = ' to move the arm. Drag anywhere else to look around.';
+  if (window.matchMedia && matchMedia('(pointer: coarse)').matches) {  // touch screens: no keyboard, so no Q / E / C
+    $('.pg-hint').lastChild.textContent = ' to move the arm. Drag anywhere else to look around.';
+    $('.pg-pose-key').textContent = 'Tap Calibrate again in this position';
+    $('.pg-pose-esc').hidden = true;
+  }
   const status = $('.pg-status'), loadBox = $('.pg-loading'), bar = $('.pg-loading b'), grip = $('.pg-grip input');
   let onStart = () => {}, onWebcam = () => {}, onGrip = () => {}, onReset = () => {}, onCalibrate = () => {};
   let flashT = 0;
@@ -577,6 +603,7 @@ function buildUI(el) {
     ready: () => { loadBox.hidden = true; $('.pg-bar').hidden = false; $('.pg-hint').hidden = false; w.classList.add('is-live'); },
     fail: (msg) => { loadBox.hidden = true; $('.pg-start').hidden = true; status.textContent = msg; w.classList.add('is-failed'); },
     dragging: (on) => { w.classList.toggle('is-dragging', on); },
+    pose: (on) => { $('.pg-pose').hidden = !on; w.classList.toggle('is-posing', on); },
     webcam: (state, msg) => {
       const on = state === 'on';
       $('.pg-webcam').hidden = !on;
@@ -584,7 +611,7 @@ function buildUI(el) {
       $('.pg-cal').hidden = !on;
       const b = $('.pg-cam'); b.disabled = state === 'loading'; b.classList.toggle('is-on', on);
       b.querySelector('span').textContent = on ? 'Stop webcam' : state === 'loading' ? 'Starting camera…' : 'Use my webcam';
-      status.textContent = msg || (on ? 'Hold a hand up to the camera, palm toward it. Calibrate (or C) with the hand relaxed and open.' : '');
+      status.textContent = msg || (on ? 'Hold a hand up to the camera, palm toward it. If the fingers map oddly, press C.' : '');
     },
     tracking: (res) => {
       const c = $('.pg-lm'), v = $('.pg-webcam video');
